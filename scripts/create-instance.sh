@@ -127,6 +127,7 @@ fi
 mkdir -p "var/instance/"
 pip install "jinja2-cli>=0.6.0"
 jinja2 "$scriptpathname/instance.cfg" > "var/instance/${INVENIO_WEB_INSTANCE}.cfg"
+pip install -U urllib3==1.21.1
 # sphinxdoc-customise-instance-end
 
 # sphinxdoc-run-npm-begin

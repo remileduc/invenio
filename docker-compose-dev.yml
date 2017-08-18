@@ -69,9 +69,11 @@ services:
       INVENIO_RABBITMQ_HOST: "rabbitmq"
       INVENIO_WORKER_HOST: "127.0.0.1"
     volumes:
+      - ../archive:/archive
       - ../modules:/modules
       - static:/home/invenio/.virtualenvs/invenio/var/instance/static
     links:
+      - archivematica
       - postgresql
       - redis
       - elasticsearch
@@ -79,6 +81,17 @@ services:
     ports:
       - "5000:5000"
     working_dir: "/modules"
+
+  archivematica:
+    restart: "always"
+    build:
+      context: .
+      dockerfile: ./archivematica/Dockerfile
+    volumes:
+      - ../archive:/archive
+    ports:
+      - "81:80"
+      - "8001:8000"
 
   postgresql:
     restart: "always"
