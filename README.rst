@@ -21,49 +21,20 @@
     waive the privileges and immunities granted to it by virtue of its status
     as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-======================================
- Invenio v3 Digital Library Framework
-======================================
+==============================
+ Invenio v3 ARCHIVEMATICA DEMO
+==============================
 
-.. image:: https://img.shields.io/travis/inveniosoftware/invenio.svg
-        :target: https://travis-ci.org/inveniosoftware/invenio
+Steps to launch the demo:
+-------------------------
 
-.. image:: https://img.shields.io/coveralls/inveniosoftware/invenio.svg
-        :target: https://coveralls.io/r/inveniosoftware/invenio
+- build the dev docker-compose file.
+- exec into the web container
+- cd /modules/invenio-archivematica
+- pip install -Ue .[all]
+- pip install invenio-records-files
+- restart containers
+- exec into the web container
+- run ``/code/scripts/populate-instance.sh``
+- execute the lines in the file ``/modules/invenio_archivematica/examples/create_archive.py``
 
-.. image:: https://img.shields.io/github/tag/inveniosoftware/invenio.svg
-        :target: https://github.com/inveniosoftware/invenio/releases
-
-.. image:: https://badges.gitter.im/Join%20Chat.svg
-    :target: https://gitter.im/inveniosoftware/invenio?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
-
-Invenio is a digital library framework that enables you to build and run your
-own large scale digital repository.
-
-Invenio can be used either as an underlying framework or via the currently one
-pre-packaged flavour which is ready to run out-of-the-box:
-
-- Invenio v3 Integrated Library System (ILS)
-
-Three further pre-packaged flavours are planned:
-
-- Invenio v3 Research Data Management (RDM)
-- Invenio v3 Media Archive (MA)
-- Invenio v3 Institutional Repository (IR)
-
-Invenio is currently powering some of the largest digital repositories in the
-world such as:
-
-- `CERN Document Server <http://cds.cern.ch>`_  (v1)
-- `CERN Open Data Repository <http://opendata.cern.ch>`_  (v2)
-- `INSPIRE High-Energy Physics Repository <http://inspirehep.net>`_  (v1)
-- `Caltech Library Catalog <http://caltech.tind.io>`_  (v1)
-- `DESY Publication Database <https://pubdb.desy.de/>`_  (v1)
-- `Zenodo research data repository <https://www.zenodo.org>`_ (v3)
-
-
-.. warning::
-
-    **WORK IN PROGRESS** This documentation and Invenio v3 is still under
-    development. We expect the first stable release of Invenio v3 and this
-    documentation by end-June 2017.

@@ -114,7 +114,7 @@ ${INVENIO_WEB_INSTANCE} users create \
 
 # sphinxdoc-index-initialisation-begin
 ${INVENIO_WEB_INSTANCE} index init
-sleep 20
+sleep 10
 ${INVENIO_WEB_INSTANCE} index queue init
 # sphinxdoc-index-initialisation-end
 
