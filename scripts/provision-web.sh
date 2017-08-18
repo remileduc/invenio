@@ -60,6 +60,7 @@ provision_web_common_ubuntu14 () {
     $sudo apt-get -y install \
          curl \
          git \
+         nano \
          rlwrap \
          screen \
          vim
@@ -83,7 +84,8 @@ provision_web_common_ubuntu14 () {
          libxslt-dev \
          nodejs \
          python-dev \
-         python-pip
+         python-pip \
+         sshpass
     # sphinxdoc-install-web-common-ubuntu14-end
 }
 

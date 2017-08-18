@@ -117,7 +117,7 @@ set -o nounset
 #fi
 # For the moment, we use an extra requirements file:
 # sphinxdoc-install-invenio-full-begin
-pip install invenio-app-ils[postgresql,elasticsearch2]
+pip install -U invenio-app-ils[postgresql,elasticsearch2]
 # sphinxdoc-install-invenio-full-end
 if [ "$DEBUG" == 1 ]; then
     pip install -r "$scriptpathname/../requirements-extra.txt"
