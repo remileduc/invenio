@@ -29,43 +29,59 @@ FROM python:2.7-slim
 ARG DEBUG
 
 # Configure Invenio instance:
-ENV INVENIO_WEB_HOST=127.0.0.1
 ENV INVENIO_WEB_INSTANCE=invenio
-ENV INVENIO_WEB_VENV=invenio
-ENV INVENIO_USER_EMAIL=info@inveniosoftware.org
-ENV INVENIO_USER_PASS=uspass123
-ENV INVENIO_POSTGRESQL_HOST=postgresql
-ENV INVENIO_POSTGRESQL_DBNAME=invenio
-ENV INVENIO_POSTGRESQL_DBUSER=invenio
-ENV INVENIO_POSTGRESQL_DBPASS=dbpass123
-ENV INVENIO_REDIS_HOST=redis
-ENV INVENIO_ELASTICSEARCH_HOST=elasticsearch
-ENV INVENIO_RABBITMQ_HOST=rabbitmq
-ENV INVENIO_WORKER_HOST=127.0.0.1
+ENV INVENIO_INSTANCE_PATH=/usr/local/var/invenio-instance
 ENV FLASK_DEBUG=$DEBUG
 
 # Install Invenio web node pre-requisites:
-COPY scripts/provision-web.sh /tmp/
-RUN /tmp/provision-web.sh
-
-# Add Invenio sources to `code` and work there:
-WORKDIR /code
-ADD . /code
-
-# Run container as user `invenio` with UID `1000`, which should match
-# current host user in most situations:
-RUN adduser --uid 1000 --disabled-password --gecos '' invenio && \
-    chown -R invenio:invenio /code
-USER invenio
+RUN apt-get update -qy \
+    && apt-get install -qy \
+        apt-utils \
+        curl \
+    && curl -sL https://deb.nodesource.com/setup_7.x | $sudo bash - \
+    && apt-get update -qy \
+    && apt-get install -qy \
+        git \
+        libffi-dev \
+        libfreetype6-dev \
+        libjpeg-dev \
+        libmsgpack-dev \
+        libpq-dev \
+        libssl-dev \
+        libtiff-dev \
+        libxml2-dev \
+        libxslt-dev \
+        nano \
+        nginx \
+        nodejs \
+        python-dev \
+        python-pip \
+        rlwrap \
+        screen \
+        sshpass \
+        vim \
+    && apt-get autoremove -qy --purge \
+    && apt-get clean -qy
 
 # Create Invenio instance:
-RUN /code/scripts/create-instance.sh
-
-# Make given VENV default:
-ENV PATH=/home/invenio/.virtualenvs/invenio/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-ENV VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
-RUN echo "source /usr/local/bin/virtualenvwrapper.sh" >> ~/.bashrc
-RUN echo "workon invenio" >> ~/.bashrc
+RUN pip install -U \
+    invenio-app-ils[postgresql,elasticsearch2] \
+    jinja2-cli>=0.6.0 \
+    git+https://github.com/inveniosoftware/invenio-archivematica.git#egg=invenio-archivematica \
+    invenio-records-files
+# Bug in simplekv, see https://github.com/mbr/simplekv/issues/57
+RUN pip install -U simplekv==0.10.0
+RUN mkdir -p ${INVENIO_INSTANCE_PATH}
+WORKDIR ${INVENIO_INSTANCE_PATH}
+COPY scripts/instance.cfg invenio.cfg
+RUN ${INVENIO_WEB_INSTANCE} npm \
+    && cd static \
+    && npm update \
+    && npm install -g --silent node-sass@3.8.0 clean-css@3.4.19 uglify-js@2.7.3 requirejs@2.2.0 \
+    && ${INVENIO_WEB_INSTANCE} collect -v \
+    && ${INVENIO_WEB_INSTANCE} assets build
+RUN chmod -R 777 ${INVENIO_INSTANCE_PATH}
+RUN mkdir /archive && chmod -R 777 /archive
 
 # Start the Invenio application:
 CMD ["/bin/bash", "-c", "invenio run -h 0.0.0.0"]
